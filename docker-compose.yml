@@ -28,5 +28,16 @@ services:
       interval: 10s
       retries: 5
 
+  userservicetests:
+    build:
+      context: ./Server/UserService
+      dockerfile: Dockerfile.test
+    depends_on:
+      - sqlserver
+    volumes:
+      - coverage-vol:/TestCoverage
+      - ./TestResults:/TestResults
+
 volumes:
   sqlserver-data:
+  coverage-vol:
