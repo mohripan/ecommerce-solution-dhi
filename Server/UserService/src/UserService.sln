@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService.Api", "UserService.Api\UserService.Api.csproj", "{7F6DB8EA-B868-4829-966D-CE70FFD2918A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserService.Api", "UserService.Api\UserService.Api.csproj", "{7F6DB8EA-B868-4829-966D-CE70FFD2918A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService.Application", "UserService.Application\UserService.Application.csproj", "{B4256869-0163-4099-9578-CB0176006174}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserService.Application", "UserService.Application\UserService.Application.csproj", "{B4256869-0163-4099-9578-CB0176006174}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService.Domain", "UserService.Domain\UserService.Domain.csproj", "{3C68039B-9C2E-4893-AF19-1F5FAD241CC3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserService.Domain", "UserService.Domain\UserService.Domain.csproj", "{3C68039B-9C2E-4893-AF19-1F5FAD241CC3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService.Infrastructure", "UserService.Infrastructure\UserService.Infrastructure.csproj", "{C9C034AD-3C18-4AD7-A320-FAC3901949E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserService.Infrastructure", "UserService.Infrastructure\UserService.Infrastructure.csproj", "{C9C034AD-3C18-4AD7-A320-FAC3901949E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService.Tests", "..\test\UserService.Tests\UserService.Tests.csproj", "{1C88BDF8-AA0F-4506-8420-1DEA311F1417}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserService.Tests", "..\test\UserService.Tests\UserService.Tests.csproj", "{1C88BDF8-AA0F-4506-8420-1DEA311F1417}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

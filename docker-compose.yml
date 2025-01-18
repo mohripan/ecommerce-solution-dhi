@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+  userservice:
+    build:
+      context: ./Server/UserService
+      dockerfile: Dockerfile
+    ports:
+      - "5000:8080"
+    depends_on:
+      - sqlserver
+    environment:
+      - ConnectionStrings__UserDatabase=Server=sqlserver,1433;Database=UserServiceDb;User Id=sa;Password=p@ssw0rd12345678;Encrypt=False;
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "p@ssw0rd12345678"
+      MSSQL_PID: "Developer"
+      MSSQL_AGENT_ENABLED: "true"
+    ports:
+      - "1433:1433"
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "p@ssw0rd12345678", "-Q", "SELECT 1"]
+      interval: 10s
+      retries: 5
