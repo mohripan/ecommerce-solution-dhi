@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UserService.Application.DTOs;
+using UserService.Application.Exceptions;
 using UserService.Domain.Entities;
 using UserService.Domain.Factories;
 using UserService.Infrastructure.Helper;
@@ -46,7 +47,7 @@ namespace UserService.Application.Services
         public async Task<UserDto> CreateUserAsync(UserDto userDto)
         {
             if (await CheckExistingUserByEmail(userDto.Email))
-                throw new ArgumentException("Email must be unique");
+                throw new GlobalException("The email is already in use.");
 
             var passwordHash = _passwordHasher.HashPassword(userDto.Password);
             var user = _userFactory.CreateUser(userDto.Username, userDto.Email, passwordHash, userDto.RoleId);

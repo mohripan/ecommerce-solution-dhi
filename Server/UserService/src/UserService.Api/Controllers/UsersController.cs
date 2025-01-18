@@ -1,9 +1,10 @@
 ﻿    using Microsoft.AspNetCore.Mvc;
-    using UserService.Application.DTOs;
-    using UserService.Application.Services;
-
-    namespace UserService.Api.Controllers
-    {
+using UserService.Api.Constants;
+using UserService.Application.DTOs;
+using UserService.Application.Exceptions;
+using UserService.Application.Services;
+namespace UserService.Api.Controllers
+{
         [ApiController]
         [Route("api/[controller]")]
         public class UsersController : ControllerBase
@@ -34,8 +35,32 @@
             [HttpPost]
             public async Task<IActionResult> Create([FromBody] UserDto userDto)
             {
-                var createdUser = await _userAppService.CreateUserAsync(userDto);
-                return CreatedAtAction(nameof(Get), new { id = createdUser.Id }, createdUser);
+                try
+                {
+                    var createdUser = await _userAppService.CreateUserAsync(userDto);
+                    return CreatedAtAction(nameof(Get), new { id = createdUser.Id }, new
+                    {
+                        code = ApiResponse.Success,
+                        message = ApiResponse.Messages[ApiResponse.Success],
+                        data = createdUser
+                    });
+                }
+                catch (GlobalException ex)
+                {
+                    return BadRequest(new
+                    {
+                        code = ApiResponse.ValidationError,
+                        message = ex.Message
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new
+                    {
+                        code = ApiResponse.InternalServerError,
+                        message = ApiResponse.Messages[ApiResponse.InternalServerError]
+                    });
+                }
             }
 
             [HttpPut("{id:int}")]
