@@ -27,10 +27,26 @@ namespace UserService.Api.Controllers
             }
 
             [HttpGet]
-            public async Task<IActionResult> GetAll()
+            public async Task<IActionResult> GetAll([FromQuery] int page = 1, [FromQuery] int sizePerPage = 10, [FromQuery] int? roleId = null)
             {
-                var users = await _userAppService.GetAllUsersAsync();
-                return Ok(users);
+                try
+                {
+                    var paginatedResponse = await _userAppService.GetAllUsersAsync(page, sizePerPage, roleId);
+                    return Ok(new
+                    {
+                        code = ApiResponse.Success,
+                        message = ApiResponse.Messages[ApiResponse.Success],
+                        data = paginatedResponse
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new
+                    {
+                        code = ApiResponse.InternalServerError,
+                        message = ApiResponse.Messages[ApiResponse.InternalServerError]
+                    });
+                }
             }
 
             [HttpPost]

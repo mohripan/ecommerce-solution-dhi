@@ -16,9 +16,13 @@ namespace UserService.Domain.Entities
 
         public MstrRole? Role { get; private set; }
 
+        public DateTime CreatedOn { get; set; }
+        public string CreatedBy { get; set; } = "SYS";
+        public DateTime? ModifiedOn { get; set; }
+        public string? ModifiedBy { get; set; }
+
         private MstrUser()
         {
-            
         }
 
         public MstrUser(string username, string email, string passwordHash, int roleId)
@@ -27,6 +31,8 @@ namespace UserService.Domain.Entities
             Email = email;
             Password = passwordHash;
             RoleId = roleId;
+            CreatedOn = DateTime.UtcNow;
+            CreatedBy = "SYS";
         }
 
         public void UpdateUser(string username, string email, string passwordHash, int roleId)
@@ -35,6 +41,8 @@ namespace UserService.Domain.Entities
             Email = email;
             Password = passwordHash;
             RoleId = roleId;
+            ModifiedOn = DateTime.UtcNow;
+            ModifiedBy = "SYS";
         }
     }
 }

@@ -7,11 +7,9 @@ using UserService.Application.DTOs;
 using UserService.Application.DTOs.Requests;
 using UserService.Application.DTOs.Responses;
 using UserService.Application.Exceptions;
+using UserService.Contracts.Interfaces;
 using UserService.Domain.Entities;
 using UserService.Domain.Factories;
-using UserService.Infrastructure.Helper;
-using UserService.Infrastructure.Repositories;
-using UserService.Infrastructure.UnitOfWork;
 
 namespace UserService.Application.Services
 {
@@ -40,10 +38,24 @@ namespace UserService.Application.Services
             return user == null ? null : MapToResponseDto(user);
         }
 
-        public async Task<IReadOnlyList<UserResponseDto>> GetAllUsersAsync()
+        public async Task<PaginatedResponse<UserResponseDto>> GetAllUsersAsync(int page, int sizePerPage, int? roleId)
         {
-            var users = await _userRepository.GetAllAsync();
-            return users.Select(MapToResponseDto).ToList();
+            var users = await _userRepository.GetAllAsync(page, sizePerPage, roleId);
+            var totalCount = await _userRepository.GetTotalCountAsync(roleId);
+
+            var totalPage = (int)Math.Ceiling((double)totalCount / sizePerPage);
+
+            return new PaginatedResponse<UserResponseDto>
+            {
+                Search = new PaginationMetadata
+                {
+                    Total = totalCount,
+                    TotalPage = totalPage,
+                    SizePerPage = sizePerPage,
+                    PageAt = page
+                },
+                Values = users.Select(MapToResponseDto).ToList()
+            };
         }
 
         public async Task<UserResponseDto> CreateUserAsync(UserRequestDto userDto)

@@ -12,7 +12,7 @@ namespace UserService.Application.Services
     public interface IUserAppService
     {
         Task<UserResponseDto?> GetUserByIdAsync(int id);
-        Task<IReadOnlyList<UserResponseDto>> GetAllUsersAsync();
+        Task<PaginatedResponse<UserResponseDto>> GetAllUsersAsync(int page, int sizePerPage, int? roleId);
         Task<UserResponseDto> CreateUserAsync(UserRequestDto userDto);
         Task<UserResponseDto?> UpdateUserAsync(int id, UserRequestDto userDto);
         Task<bool> DeleteUserAsync(int id);

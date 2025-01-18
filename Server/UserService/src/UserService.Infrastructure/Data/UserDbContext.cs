@@ -22,12 +22,28 @@ namespace UserService.Infrastructure.Data
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.RoleName).IsRequired();
 
+                entity.Property(e => e.CreatedOn).HasDefaultValueSql("GETUTCDATE()");
+                entity.Property(e => e.CreatedBy).HasDefaultValue("SYS");
+                entity.Property(e => e.ModifiedOn).IsRequired(false);
+                entity.Property(e => e.ModifiedBy).IsRequired(false);
+
                 entity.HasData(
-                    new MstrRole { Id = 1, RoleName = "Buyer" },
-                    new MstrRole { Id = 2, RoleName = "Seller" }
+                    new MstrRole
+                    {
+                        Id = 1,
+                        RoleName = "Buyer",
+                        CreatedOn = new DateTime(2025, 1, 1),
+                        CreatedBy = "SYS"
+                    },
+                    new MstrRole
+                    {
+                        Id = 2,
+                        RoleName = "Seller",
+                        CreatedOn = new DateTime(2025, 1, 1),
+                        CreatedBy = "SYS"
+                    }
                 );
             });
-
 
             modelBuilder.Entity<MstrUser>(entity =>
             {
@@ -37,6 +53,11 @@ namespace UserService.Infrastructure.Data
                 entity.Property(u => u.Username).IsRequired();
                 entity.Property(u => u.Email).IsRequired();
                 entity.Property(u => u.Password).IsRequired();
+
+                entity.Property(u => u.CreatedOn).HasDefaultValueSql("GETUTCDATE()");
+                entity.Property(u => u.CreatedBy).HasDefaultValue("SYS");
+                entity.Property(u => u.ModifiedOn).IsRequired(false);
+                entity.Property(u => u.ModifiedBy).IsRequired(false);
 
                 entity.HasOne(u => u.Role)
                       .WithMany()

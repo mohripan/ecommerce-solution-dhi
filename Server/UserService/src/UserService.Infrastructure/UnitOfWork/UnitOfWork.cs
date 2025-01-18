@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UserService.Contracts.Interfaces;
 using UserService.Infrastructure.Data;
 
 namespace UserService.Infrastructure.UnitOfWork

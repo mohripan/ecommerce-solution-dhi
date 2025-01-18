@@ -10,5 +10,9 @@ namespace UserService.Domain.Entities
     {
         public int Id { get; set; }
         public string RoleName { get; set; } = default!;
+        public DateTime CreatedOn { get; set; }
+        public string CreatedBy { get; set; } = "SYS";
+        public DateTime? ModifiedOn { get; set; }
+        public string? ModifiedBy { get; set; }
     }
 }
