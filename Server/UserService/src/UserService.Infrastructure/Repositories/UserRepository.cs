@@ -32,6 +32,12 @@ namespace UserService.Infrastructure.Repositories
                                    .ToListAsync();
         }
 
+        public async Task<MstrUser?> GetByEmailAsync(string email)
+        {
+            return await _dbContext.MstrUsers
+                           .FirstOrDefaultAsync(u => u.Email == email);
+        }
+
         public async Task AddAsync(MstrUser user)
         {
             await _dbContext.MstrUsers.AddAsync(user);

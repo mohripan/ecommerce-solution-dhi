@@ -11,6 +11,7 @@ namespace UserService.Infrastructure.Repositories
     {
         Task<MstrUser?> GetByIdAsync(int id);
         Task<IReadOnlyList<MstrUser>> GetAllAsync();
+        Task<MstrUser?> GetByEmailAsync(string email);
         Task AddAsync(MstrUser user);
         void Update(MstrUser user);
         void Delete(MstrUser user);

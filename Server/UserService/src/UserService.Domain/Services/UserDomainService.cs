@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace UserService.Domain.Services
 {
+    
     public class UserDomainService : IUserDomainService
     {
         public void ValidateBeforeCreation(Entities.MstrUser user)
@@ -15,6 +16,9 @@ namespace UserService.Domain.Services
 
             if (string.IsNullOrWhiteSpace(user.Username))
                 throw new ArgumentException("Username cannot be empty");
+
+            if (string.IsNullOrWhiteSpace(user.Password))
+                throw new ArgumentException("Password cannot be empty");
         }
     }
 }

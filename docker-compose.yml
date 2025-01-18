@@ -21,7 +21,12 @@ services:
       MSSQL_AGENT_ENABLED: "true"
     ports:
       - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
     healthcheck:
       test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "p@ssw0rd12345678", "-Q", "SELECT 1"]
       interval: 10s
       retries: 5
+
+volumes:
+  sqlserver-data:

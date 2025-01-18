@@ -45,6 +45,9 @@ namespace UserService.Application.Services
 
         public async Task<UserDto> CreateUserAsync(UserDto userDto)
         {
+            if (await CheckExistingUserByEmail(userDto.Email))
+                throw new ArgumentException("Email must be unique");
+
             var passwordHash = _passwordHasher.HashPassword(userDto.Password);
             var user = _userFactory.CreateUser(userDto.Username, userDto.Email, passwordHash, userDto.RoleId);
 
@@ -58,7 +61,7 @@ namespace UserService.Application.Services
         {
             var existingUser = await _userRepository.GetByIdAsync(id);
             if (existingUser == null)
-                return null;
+                throw new ArgumentException("User doesn't exist");
 
             var newPasswordHash = _passwordHasher.HashPassword(userDto.Password);
             existingUser.UpdateUser(userDto.Username, userDto.Email, newPasswordHash, userDto.RoleId);
@@ -92,6 +95,13 @@ namespace UserService.Application.Services
                 RoleId = user.RoleId,
                 RoleName = user.Role?.RoleName
             };
+        }
+
+        private async Task<bool> CheckExistingUserByEmail(string email)
+        {
+            var existingUser = await _userRepository.GetByEmailAsync(email);
+            if (existingUser == null) return false;
+            return true;
         }
     }
 }
