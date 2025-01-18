@@ -55,11 +55,12 @@ namespace UserService.Infrastructure.Services
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Audience"],
                 claims: claims,
                 expires: DateTime.UtcNow.AddHours(1),
                 signingCredentials: credentials
             );
+
+            token.Payload["aud"] = new string[] { "UserService", "DiscoveryService" };
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }

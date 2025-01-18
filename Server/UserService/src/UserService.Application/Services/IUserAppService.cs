@@ -17,5 +17,6 @@ namespace UserService.Application.Services
         Task<UserResponseDto?> UpdateUserAsync(int id, UserRequestDto userDto);
         Task<bool> DeleteUserAsync(int id);
         Task<(bool IsAuthenticated, string Token, DateTime Expiration)> AuthenticateUserAsync(string email, string password);
+        Task LogoutAsync(string token);
     }
 }

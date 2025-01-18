@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UserService.Contracts.Interfaces;
 using UserService.Infrastructure.Data;
 
-namespace UserService.Infrastructure.UnitOfWork
+namespace UserService.Infrastructure.UnitOfWorks
 {
     public class UnitOfWork : IUnitOfWork
     {

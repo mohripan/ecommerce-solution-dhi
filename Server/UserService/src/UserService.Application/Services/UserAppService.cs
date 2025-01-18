@@ -20,19 +20,22 @@ namespace UserService.Application.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IPasswordHasher _passwordHasher;
         private readonly IAuthService _authService;
+        private readonly IBlacklistService _blacklistService;
 
         public UserAppService(
             IUserRepository userRepository,
             IUserFactory userFactory,
             IUnitOfWork unitOfWork,
             IPasswordHasher passwordHasher,
-            IAuthService authService)
+            IAuthService authService,
+            IBlacklistService blacklistService)
         {
             _userRepository = userRepository;
             _userFactory = userFactory;
             _unitOfWork = unitOfWork;
             _passwordHasher = passwordHasher;
             _authService = authService;
+            _blacklistService = blacklistService;
         }
 
         public async Task<UserResponseDto?> GetUserByIdAsync(int id)
@@ -116,6 +119,13 @@ namespace UserService.Application.Services
             var expiration = DateTime.UtcNow.AddHours(1);
 
             return (true, token, expiration);
+        }
+
+        public async Task LogoutAsync(string token)
+        {
+            _blacklistService.AddToBlacklist(token);
+
+            await Task.CompletedTask;
         }
 
 

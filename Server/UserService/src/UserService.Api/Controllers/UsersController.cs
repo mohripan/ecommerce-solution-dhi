@@ -1,4 +1,6 @@
-﻿    using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using UserService.Api.Constants;
 using UserService.Application.DTOs;
 using UserService.Application.DTOs.Requests;
@@ -12,9 +14,11 @@ namespace UserService.Api.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserAppService _userAppService;
-        public UsersController(IUserAppService userAppService)
+        private readonly IJwtService _jwtService;
+        public UsersController(IUserAppService userAppService, IJwtService jwtService)
         {
             _userAppService = userAppService;
+            _jwtService = jwtService;
         }
         [HttpGet("{id:int}")]
         public async Task<IActionResult> Get(int id)
@@ -117,22 +121,77 @@ namespace UserService.Api.Controllers
             }
         }
 
-        [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update(int id, [FromBody] UserRequestDto userDto)
+        [HttpPut]
+        [Authorize]
+        public async Task<IActionResult> Update([FromBody] UserRequestDto userDto)
         {
-            var updatedUser = await _userAppService.UpdateUserAsync(id, userDto);
-            if (updatedUser == null)
-                return NotFound();
-            return Ok(updatedUser);
+            try
+            {
+                var userId = _jwtService.GetUserIdFromToken(User);
+                var updatedUser = await _userAppService.UpdateUserAsync(userId, userDto);
+
+                if (updatedUser == null)
+                    return NotFound();
+
+                return Ok(updatedUser);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    code = ApiResponse.InternalServerError,
+                    message = ex.Message
+                });
+            }
         }
 
-        [HttpDelete("{id:int}")]
-        public async Task<IActionResult> Delete(int id)
+        [HttpDelete]
+        [Authorize]
+        public async Task<IActionResult> Delete()
         {
-            var success = await _userAppService.DeleteUserAsync(id);
-            if (!success)
-                return NotFound();
-            return NoContent();
+            try
+            {
+                var userId = _jwtService.GetUserIdFromToken(User);
+                var success = await _userAppService.DeleteUserAsync(userId);
+
+                if (!success)
+                    return NotFound();
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    code = ApiResponse.InternalServerError,
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost("logout")]
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            try
+            {
+                var token = _jwtService.ExtractToken(Request.Headers["Authorization"]);
+                await _userAppService.LogoutAsync(token);
+
+                return Ok(new
+                {
+                    code = ApiResponse.Success,
+                    message = "Logout successful."
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    code = ApiResponse.ValidationError,
+                    message = ex.Message
+                });
+            }
         }
     }
 }
