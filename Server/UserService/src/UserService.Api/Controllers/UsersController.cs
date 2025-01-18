@@ -1,6 +1,7 @@
 ﻿    using Microsoft.AspNetCore.Mvc;
 using UserService.Api.Constants;
 using UserService.Application.DTOs;
+using UserService.Application.DTOs.Requests;
 using UserService.Application.Exceptions;
 using UserService.Application.Services;
 namespace UserService.Api.Controllers
@@ -33,7 +34,7 @@ namespace UserService.Api.Controllers
             }
 
             [HttpPost]
-            public async Task<IActionResult> Create([FromBody] UserDto userDto)
+            public async Task<IActionResult> Create([FromBody] UserRequestDto userDto)
             {
                 try
                 {
@@ -64,7 +65,7 @@ namespace UserService.Api.Controllers
             }
 
             [HttpPut("{id:int}")]
-            public async Task<IActionResult> Update(int id, [FromBody] UserDto userDto)
+            public async Task<IActionResult> Update(int id, [FromBody] UserRequestDto userDto)
             {
                 var updatedUser = await _userAppService.UpdateUserAsync(id, userDto);
                 if (updatedUser == null)

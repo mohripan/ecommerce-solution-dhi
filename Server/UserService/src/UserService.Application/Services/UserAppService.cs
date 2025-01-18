@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UserService.Application.DTOs;
+using UserService.Application.DTOs.Requests;
+using UserService.Application.DTOs.Responses;
 using UserService.Application.Exceptions;
 using UserService.Domain.Entities;
 using UserService.Domain.Factories;
@@ -32,19 +34,19 @@ namespace UserService.Application.Services
             _passwordHasher = passwordHasher;
         }
 
-        public async Task<UserDto?> GetUserByIdAsync(int id)
+        public async Task<UserResponseDto?> GetUserByIdAsync(int id)
         {
             var user = await _userRepository.GetByIdAsync(id);
-            return user == null ? null : MapToDto(user);
+            return user == null ? null : MapToResponseDto(user);
         }
 
-        public async Task<IReadOnlyList<UserDto>> GetAllUsersAsync()
+        public async Task<IReadOnlyList<UserResponseDto>> GetAllUsersAsync()
         {
             var users = await _userRepository.GetAllAsync();
-            return users.Select(MapToDto).ToList();
+            return users.Select(MapToResponseDto).ToList();
         }
 
-        public async Task<UserDto> CreateUserAsync(UserDto userDto)
+        public async Task<UserResponseDto> CreateUserAsync(UserRequestDto userDto)
         {
             if (await CheckExistingUserByEmail(userDto.Email))
                 throw new GlobalException("The email is already in use.");
@@ -55,10 +57,10 @@ namespace UserService.Application.Services
             await _userRepository.AddAsync(user);
             await _unitOfWork.SaveChangesAsync();
 
-            return MapToDto(user);
+            return MapToResponseDto(user);
         }
 
-        public async Task<UserDto?> UpdateUserAsync(int id, UserDto userDto)
+        public async Task<UserResponseDto?> UpdateUserAsync(int id, UserRequestDto userDto)
         {
             var existingUser = await _userRepository.GetByIdAsync(id);
             if (existingUser == null)
@@ -70,7 +72,7 @@ namespace UserService.Application.Services
             _userRepository.Update(existingUser);
             await _unitOfWork.SaveChangesAsync();
 
-            return MapToDto(existingUser);
+            return MapToResponseDto(existingUser);
         }
 
         public async Task<bool> DeleteUserAsync(int id)
@@ -85,14 +87,13 @@ namespace UserService.Application.Services
         }
 
         // Helper method
-        private UserDto MapToDto(MstrUser user)
+        private UserResponseDto MapToResponseDto(MstrUser user)
         {
-            return new UserDto
+            return new UserResponseDto
             {
                 Id = user.Id,
                 Username = user.Username,
                 Email = user.Email,
-                Password = user.Password,
                 RoleId = user.RoleId,
                 RoleName = user.Role?.RoleName
             };
