@@ -9,6 +9,7 @@ using UserService.Domain.Services;
 using UserService.Infrastructure.Data;
 using UserService.Infrastructure.Helper;
 using UserService.Infrastructure.Repositories;
+using UserService.Infrastructure.Services;
 using UserService.Infrastructure.UnitOfWork;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -43,6 +44,7 @@ builder.Services.AddScoped<IUserFactory, UserFactory>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddScoped<IUserAppService, UserAppService>();
 
@@ -58,19 +60,20 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<UserDbContext>();
     try
     {
-        if (db.Database.GetPendingMigrations().Any())
+        if (await db.Database.CanConnectAsync())
         {
-            Console.WriteLine("Applying pending migrations...");
-            db.Database.Migrate();
+            Console.WriteLine("Database exists. Applying migrations...");
+            await db.Database.MigrateAsync();
         }
         else
         {
-            Console.WriteLine("No pending migrations. Database is up-to-date.");
+            Console.WriteLine("Database does not exist. Creating database and applying migrations...");
+            await db.Database.EnsureCreatedAsync();
         }
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"An error occurred while migrating the database: {ex.Message}");
+        Console.WriteLine($"An error occurred while checking or migrating the database: {ex.Message}");
         throw;
     }
 }

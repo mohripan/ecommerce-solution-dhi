@@ -35,7 +35,7 @@ namespace UserService.Infrastructure.Helper
             byte[] salt = Convert.FromBase64String(parts[0]);
             byte[] storedHash = Convert.FromBase64String(parts[1]);
 
-            using (var deriveBytes = new Rfc2898DeriveBytes(hashedPassword, salt, 100000, HashAlgorithmName.SHA256))
+            using (var deriveBytes = new Rfc2898DeriveBytes(inputPassword, salt, 100000, HashAlgorithmName.SHA256))
             {
                 byte[] computedHash = deriveBytes.GetBytes(32);
 

@@ -19,17 +19,20 @@ namespace UserService.Application.Services
         private readonly IUserFactory _userFactory;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IPasswordHasher _passwordHasher;
+        private readonly IAuthService _authService;
 
         public UserAppService(
             IUserRepository userRepository,
             IUserFactory userFactory,
             IUnitOfWork unitOfWork,
-            IPasswordHasher passwordHasher)
+            IPasswordHasher passwordHasher,
+            IAuthService authService)
         {
             _userRepository = userRepository;
             _userFactory = userFactory;
             _unitOfWork = unitOfWork;
             _passwordHasher = passwordHasher;
+            _authService = authService;
         }
 
         public async Task<UserResponseDto?> GetUserByIdAsync(int id)
@@ -78,7 +81,7 @@ namespace UserService.Application.Services
         {
             var existingUser = await _userRepository.GetByIdAsync(id);
             if (existingUser == null)
-                throw new ArgumentException("User doesn't exist");
+                throw new GlobalException("User doesn't exist.");
 
             var newPasswordHash = _passwordHasher.HashPassword(userDto.Password);
             existingUser.UpdateUser(userDto.Username, userDto.Email, newPasswordHash, userDto.RoleId);
@@ -99,6 +102,22 @@ namespace UserService.Application.Services
             await _unitOfWork.SaveChangesAsync();
             return true;
         }
+
+        public async Task<(bool IsAuthenticated, string Token, DateTime Expiration)> AuthenticateUserAsync(string email, string password)
+        {
+            var user = await _userRepository.GetByEmailAsync(email);
+
+            var isValidUser = await _authService.ValidateUserAsync(email, password);
+            Console.WriteLine("This is user: " + user);
+            if (!isValidUser || user == null)
+                return (false, string.Empty, DateTime.MinValue);
+
+            var token = await _authService.GenerateJwtTokenAsync(user.Id);
+            var expiration = DateTime.UtcNow.AddHours(1);
+
+            return (true, token, expiration);
+        }
+
 
         // Helper method
         private UserResponseDto MapToResponseDto(MstrUser user)

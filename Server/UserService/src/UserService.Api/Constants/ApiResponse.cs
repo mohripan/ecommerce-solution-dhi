@@ -6,6 +6,7 @@
         public const string NotFound = "NOT_FOUND";
         public const string ValidationError = "VALIDATION_ERROR";
         public const string InternalServerError = "INTERNAL_SERVER_ERROR";
+        public const string AuthenticationFailed = "AUTHERNTICATION_FAILED";
 
         public static readonly Dictionary<string, string> Messages = new()
         {
