@@ -57,7 +57,9 @@ namespace UserService.Application.Services
             await _userRepository.AddAsync(user);
             await _unitOfWork.SaveChangesAsync();
 
-            return MapToResponseDto(user);
+            var savedUser = await _userRepository.GetByIdAsync(user.Id);
+
+            return MapToResponseDto(savedUser);
         }
 
         public async Task<UserResponseDto?> UpdateUserAsync(int id, UserRequestDto userDto)
