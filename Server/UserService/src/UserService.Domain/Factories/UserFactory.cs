@@ -17,9 +17,9 @@ namespace UserService.Domain.Factories
             _userDomainService = userDomainService;
         }
 
-        public MstrUser CreateUser(string username, string email, int roleId)
+        public MstrUser CreateUser(string username, string email, string password, int roleId)
         {
-            var user = new MstrUser(username, email, roleId);
+            var user = new MstrUser(username, email, password, roleId);
             _userDomainService.ValidateBeforeCreation(user);
             return user;
         }

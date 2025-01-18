@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using UserService.Application.DTOs;
 using UserService.Domain.Entities;
 using UserService.Domain.Factories;
+using UserService.Infrastructure.Helper;
 using UserService.Infrastructure.Repositories;
 using UserService.Infrastructure.UnitOfWork;
 
@@ -16,15 +17,18 @@ namespace UserService.Application.Services
         private readonly IUserRepository _userRepository;
         private readonly IUserFactory _userFactory;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IPasswordHasher _passwordHasher;
 
         public UserAppService(
             IUserRepository userRepository,
             IUserFactory userFactory,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork,
+            IPasswordHasher passwordHasher)
         {
             _userRepository = userRepository;
             _userFactory = userFactory;
             _unitOfWork = unitOfWork;
+            _passwordHasher = passwordHasher;
         }
 
         public async Task<UserDto?> GetUserByIdAsync(int id)
@@ -41,14 +45,11 @@ namespace UserService.Application.Services
 
         public async Task<UserDto> CreateUserAsync(UserDto userDto)
         {
-            // Use the factory to create a user (this includes domain validations)
-            var user = _userFactory.CreateUser(userDto.Username, userDto.Email, userDto.RoleId);
+            var passwordHash = _passwordHasher.HashPassword(userDto.Password);
+            var user = _userFactory.CreateUser(userDto.Username, userDto.Email, passwordHash, userDto.RoleId);
 
             await _userRepository.AddAsync(user);
             await _unitOfWork.SaveChangesAsync();
-
-            // In a real system, you might publish a domain event here 
-            // e.g. UserRegisteredEvent
 
             return MapToDto(user);
         }
@@ -59,8 +60,8 @@ namespace UserService.Application.Services
             if (existingUser == null)
                 return null;
 
-            // domain method for updating
-            existingUser.UpdateUser(userDto.Username, userDto.Email, userDto.RoleId);
+            var newPasswordHash = _passwordHasher.HashPassword(userDto.Password);
+            existingUser.UpdateUser(userDto.Username, userDto.Email, newPasswordHash, userDto.RoleId);
 
             _userRepository.Update(existingUser);
             await _unitOfWork.SaveChangesAsync();
@@ -87,6 +88,7 @@ namespace UserService.Application.Services
                 Id = user.Id,
                 Username = user.Username,
                 Email = user.Email,
+                Password = user.Password,
                 RoleId = user.RoleId,
                 RoleName = user.Role?.RoleName
             };

@@ -9,6 +9,6 @@ namespace UserService.Domain.Factories
 {
     public interface IUserFactory
     {
-        MstrUser CreateUser(string username, string email, int roleId);
+        MstrUser CreateUser(string username, string email, string password, int roleId);
     }
 }

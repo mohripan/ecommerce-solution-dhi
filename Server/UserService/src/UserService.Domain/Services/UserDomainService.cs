@@ -11,9 +11,10 @@ namespace UserService.Domain.Services
         public void ValidateBeforeCreation(Entities.MstrUser user)
         {
             if (string.IsNullOrWhiteSpace(user.Email))
-            {
-                throw new ArgumentException("Email cannot be empty.");
-            }
+                throw new ArgumentException("Email cannot be empty");
+
+            if (string.IsNullOrWhiteSpace(user.Username))
+                throw new ArgumentException("Username cannot be empty");
         }
     }
 }

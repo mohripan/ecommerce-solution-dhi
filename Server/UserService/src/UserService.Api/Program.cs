@@ -3,6 +3,7 @@ using UserService.Application.Services;
 using UserService.Domain.Factories;
 using UserService.Domain.Services;
 using UserService.Infrastructure.Data;
+using UserService.Infrastructure.Helper;
 using UserService.Infrastructure.Repositories;
 using UserService.Infrastructure.UnitOfWork;
 
@@ -20,6 +21,7 @@ builder.Services.AddScoped<IUserFactory, UserFactory>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 
 builder.Services.AddScoped<IUserAppService, UserAppService>();
 
