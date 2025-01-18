@@ -9,7 +9,9 @@ services:
     depends_on:
       - sqlserver
     environment:
-      - ConnectionStrings__UserDatabase=Server=sqlserver,1433;Database=UserServiceDb;User Id=sa;Password=p@ssw0rd12345678;Encrypt=False;
+      - ConnectionStrings__UserDatabase=Server=sqlserver,1433;Database=UserServiceDb;User Id=sa;Password=p@ssw0rd12345678;Encrypt=False
+    profiles:
+      - production
 
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -37,6 +39,8 @@ services:
     volumes:
       - coverage-vol:/TestCoverage
       - ./TestResults:/TestResults
+    profiles:
+      - testing
 
 volumes:
   sqlserver-data:
