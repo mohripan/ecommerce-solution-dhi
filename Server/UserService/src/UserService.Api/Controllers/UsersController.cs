@@ -176,19 +176,20 @@ namespace UserService.Api.Controllers
             try
             {
                 var token = _jwtService.ExtractToken(Request.Headers["Authorization"]);
+
                 await _userAppService.LogoutAsync(token);
 
                 return Ok(new
                 {
-                    code = ApiResponse.Success,
-                    message = "Logout successful."
+                    code = "Success",
+                    message = "Logout successful. Old tokens are now invalid."
                 });
             }
             catch (Exception ex)
             {
                 return BadRequest(new
                 {
-                    code = ApiResponse.ValidationError,
+                    code = "ValidationError",
                     message = ex.Message
                 });
             }

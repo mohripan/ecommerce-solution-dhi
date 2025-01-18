@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using UserService.Application.DTOs;
@@ -21,6 +22,7 @@ namespace UserService.Application.Services
         private readonly IPasswordHasher _passwordHasher;
         private readonly IAuthService _authService;
         private readonly IBlacklistService _blacklistService;
+        private readonly IJwtService _jwtService;
 
         public UserAppService(
             IUserRepository userRepository,
@@ -28,7 +30,8 @@ namespace UserService.Application.Services
             IUnitOfWork unitOfWork,
             IPasswordHasher passwordHasher,
             IAuthService authService,
-            IBlacklistService blacklistService)
+            IBlacklistService blacklistService,
+            IJwtService jwtService)
         {
             _userRepository = userRepository;
             _userFactory = userFactory;
@@ -36,6 +39,7 @@ namespace UserService.Application.Services
             _passwordHasher = passwordHasher;
             _authService = authService;
             _blacklistService = blacklistService;
+            _jwtService = jwtService;
         }
 
         public async Task<UserResponseDto?> GetUserByIdAsync(int id)
@@ -76,7 +80,6 @@ namespace UserService.Application.Services
             await _unitOfWork.SaveChangesAsync();
 
             var savedUser = await _userRepository.GetByIdAsync(user.Id);
-
             return MapToResponseDto(savedUser);
         }
 
@@ -123,13 +126,29 @@ namespace UserService.Application.Services
 
         public async Task LogoutAsync(string token)
         {
-            _blacklistService.AddToBlacklist(token);
+            ClaimsPrincipal principal;
+            try
+            {
+                principal = _authService.ValidateToken(token, validateLifetime: false);
+            }
+            catch
+            {
+                return;
+            }
 
-            await Task.CompletedTask;
+            var userIdStr = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!int.TryParse(userIdStr, out var userId))
+                return;
+
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null) return;
+
+            user.RefreshSecurityStamp();
+            await _unitOfWork.SaveChangesAsync();
         }
 
-
-        // Helper method
+        //---------------------------------------------------------------------------------
+        // Helper
         private UserResponseDto MapToResponseDto(MstrUser user)
         {
             return new UserResponseDto
@@ -145,8 +164,7 @@ namespace UserService.Application.Services
         private async Task<bool> CheckExistingUserByEmail(string email)
         {
             var existingUser = await _userRepository.GetByEmailAsync(email);
-            if (existingUser == null) return false;
-            return true;
+            return existingUser != null;
         }
     }
 }

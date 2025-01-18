@@ -53,6 +53,7 @@ namespace UserService.Infrastructure.Data
                 entity.Property(u => u.Username).IsRequired();
                 entity.Property(u => u.Email).IsRequired();
                 entity.Property(u => u.Password).IsRequired();
+                entity.Property(u => u.SecurityStamp).IsRequired();
 
                 entity.Property(u => u.CreatedOn).HasDefaultValueSql("GETUTCDATE()");
                 entity.Property(u => u.CreatedBy).HasDefaultValue("SYS");

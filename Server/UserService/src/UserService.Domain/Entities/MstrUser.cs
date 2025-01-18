@@ -16,6 +16,8 @@ namespace UserService.Domain.Entities
 
         public MstrRole? Role { get; private set; }
 
+        public string SecurityStamp { get; private set; } = Guid.NewGuid().ToString("N");
+
         public DateTime CreatedOn { get; set; }
         public string CreatedBy { get; set; } = "SYS";
         public DateTime? ModifiedOn { get; set; }
@@ -44,5 +46,10 @@ namespace UserService.Domain.Entities
             ModifiedOn = DateTime.UtcNow;
             ModifiedBy = "SYS";
         }
+        public void RefreshSecurityStamp()
+        {
+            SecurityStamp = Guid.NewGuid().ToString("N");
+        }
+
     }
 }

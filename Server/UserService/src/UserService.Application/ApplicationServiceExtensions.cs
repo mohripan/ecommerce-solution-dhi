@@ -15,7 +15,7 @@ namespace UserService.Application
         {
             services.AddScoped<IUserAppService, UserAppService>();
             services.AddScoped<IJwtService, JwtService>();
-            services.AddScoped<IBlacklistService, BlacklistService>();
+            services.AddSingleton<IBlacklistService, BlacklistService>();
 
             return services;
         }

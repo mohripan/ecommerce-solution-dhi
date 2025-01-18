@@ -10,5 +10,6 @@ namespace UserService.Contracts.Interfaces
     {
         Task<bool> ValidateUserAsync(string email, string password);
         Task<string> GenerateJwtTokenAsync(int userId);
+        System.Security.Claims.ClaimsPrincipal ValidateToken(string tokenString, bool validateLifetime = false);
     }
 }
