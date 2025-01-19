@@ -13,7 +13,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddHttpClients(builder.Configuration);
-builder.Services.AddScoped<ITokenValidationService, TokenValidationService>();
 builder.Services.AddScoped<IUserServiceClient, UserServiceClient>();
 builder.Services.AddJwtAuthentication(builder.Configuration);
 

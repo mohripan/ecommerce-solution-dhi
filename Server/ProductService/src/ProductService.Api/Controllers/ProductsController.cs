@@ -106,6 +106,10 @@ namespace ProductService.Api.Controllers
                 if (product == null) return NotFound();
                 return Ok(product);
             }
+            catch (ArgumentException ex)
+            {
+                return BadRequest("QuantityChange must be > 0 when purchasing.");
+            }
             catch (InvalidOperationException ex)
             {
                 return BadRequest("Not enough stock to fulfill purchase.");
