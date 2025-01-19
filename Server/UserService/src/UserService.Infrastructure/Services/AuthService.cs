@@ -69,7 +69,7 @@ namespace UserService.Infrastructure.Services
                 signingCredentials: credentials
             );
 
-            token.Payload["aud"] = new string[] { "UserService", "DiscoveryService" };
+            token.Payload["aud"] = new string[] { "UserService", "DiscoveryService", "ProductService", "TransactionService" };
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }

@@ -112,7 +112,6 @@ namespace UserService.Application.Services.Impls
             var user = await _userRepository.GetByEmailAsync(email);
 
             var isValidUser = await _authService.ValidateUserAsync(email, password);
-            Console.WriteLine("This is user: " + user);
             if (!isValidUser || user == null)
                 return (false, string.Empty, DateTime.MinValue);
 

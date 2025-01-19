@@ -13,6 +13,16 @@ namespace DiscoveryService.Api.Extensions
                 client.BaseAddress = new Uri(serviceUrls.UserService);
             });
 
+            services.AddHttpClient("ProductServiceClient", client =>
+            {
+                client.BaseAddress = new Uri(serviceUrls.ProductService);
+            });
+
+            services.AddHttpClient("TransactionServiceClient", client =>
+            {
+                client.BaseAddress = new Uri(serviceUrls.TransactionService);
+            });
+
             return services;
         }
     }

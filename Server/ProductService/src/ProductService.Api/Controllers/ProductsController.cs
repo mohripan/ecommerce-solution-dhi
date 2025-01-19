@@ -48,7 +48,7 @@ namespace ProductService.Api.Controllers
         }
 
         [HttpPatch("{id}/purchased")]
-        [Authorize(Roles = "Seller")]
+        [Authorize(Roles = "Buyer")]
         public async Task<IActionResult> GoodPurchased(int id, [FromBody] ReStockRequestDto request)
         {
             var userId = int.Parse(User.FindFirst("sub")!.Value);
