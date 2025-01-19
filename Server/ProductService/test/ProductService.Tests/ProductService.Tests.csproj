@@ -17,12 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\DiscoveryService.Api\DiscoveryService.Api.csproj" />
-    <ProjectReference Include="..\..\src\DiscoveryService.Application\DiscoveryService.Application.csproj" />
-    <ProjectReference Include="..\..\src\DiscoveryService.Infrastructure\DiscoveryService.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
   </ItemGroup>
 
