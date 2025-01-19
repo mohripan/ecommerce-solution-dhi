@@ -9,6 +9,6 @@ namespace TransactionService.Domain.Factories
 {
     public interface ITransactionHistoryFactory
     {
-        TransactionHistory CreateTransaction(int productId, int userId, int quantity, double price, int statusId, string? remarks = null);
+        TransactionHistory CreateTransaction(int productId, int userId, int quantity, double price, string? remarks = null);
     }
 }

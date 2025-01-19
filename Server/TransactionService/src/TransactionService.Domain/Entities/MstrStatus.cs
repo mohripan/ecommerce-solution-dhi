@@ -8,10 +8,10 @@ namespace TransactionService.Domain.Entities
 {
     public class MstrStatus
     {
-        public int Id { get; private set; }
-        public string StatusName { get; private set; } = string.Empty;
-        public DateTime CreatedOn { get; private set; }
-        public string CreatedBy { get; private set; } = "SYS";
+        public int Id { get; set; }
+        public string StatusName { get; set; } = string.Empty;
+        public DateTime CreatedOn { get; set; }
+        public string CreatedBy { get; set; } = "SYS";
 
         private MstrStatus() { }
 

@@ -14,6 +14,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddHttpClients(builder.Configuration);
 builder.Services.AddScoped<IUserServiceClient, UserServiceClient>();
+builder.Services.AddScoped<IProductServiceClient, ProductServiceClient>();
 builder.Services.AddJwtAuthentication(builder.Configuration);
 
 var app = builder.Build();

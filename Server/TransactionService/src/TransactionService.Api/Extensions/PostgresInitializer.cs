@@ -46,6 +46,7 @@ namespace TransactionService.Api.Extensions
                     Price DOUBLE PRECISION NOT NULL,
                     TotalPrice DOUBLE PRECISION NOT NULL,
                     TransactionAt TIMESTAMP NOT NULL,
+                    ModifiedOn TIMESTAMP,
                     StatusId INT NOT NULL,
                     Remarks TEXT DEFAULT NULL,
                     CONSTRAINT FK_Transactions_MstrStatus FOREIGN KEY (StatusId) REFERENCES MstrStatus(Id) ON DELETE RESTRICT

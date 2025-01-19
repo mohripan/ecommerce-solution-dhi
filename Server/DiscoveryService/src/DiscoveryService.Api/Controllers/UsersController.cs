@@ -16,35 +16,35 @@ namespace DiscoveryService.Api.Controllers
             _userServiceClient = userServiceClient;
         }
 
-        [HttpGet("users")]
+        [HttpGet("")]
         public async Task<IActionResult> GetAllUsers([FromQuery] int page = 1, [FromQuery] int sizePerPage = 10, [FromQuery] int? roleId = null)
         {
             var (statusCode, content) = await _userServiceClient.GetAllUsersAsync(page, sizePerPage, roleId);
             return CreateResponse(statusCode, content);
         }
 
-        [HttpGet("users/{id:int}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetUserById(int id)
         {
             var (statusCode, content) = await _userServiceClient.GetUserByIdAsync(id);
             return CreateResponse(statusCode, content);
         }
 
-        [HttpPost("users/login")]
+        [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] object loginRequestDto)
         {
             var (statusCode, content) = await _userServiceClient.LoginAsync(loginRequestDto);
             return CreateResponse(statusCode, content);
         }
 
-        [HttpPost("users")]
+        [HttpPost("")]
         public async Task<IActionResult> CreateUser([FromBody] object userCreateDto)
         {
             var (statusCode, content) = await _userServiceClient.CreateUserAsync(userCreateDto);
             return CreateResponse(statusCode, content);
         }
 
-        [HttpPut("users")]
+        [HttpPut("")]
         [Authorize]
         public async Task<IActionResult> UpdateUser([FromBody] object userUpdateDto)
         {
@@ -53,7 +53,7 @@ namespace DiscoveryService.Api.Controllers
             return CreateResponse(statusCode, content);
         }
 
-        [HttpDelete("users")]
+        [HttpDelete("")]
         [Authorize]
         public async Task<IActionResult> DeleteUser()
         {
@@ -62,7 +62,7 @@ namespace DiscoveryService.Api.Controllers
             return CreateResponse(statusCode, content);
         }
 
-        [HttpPost("users/logout")]
+        [HttpPost("logout")]
         [Authorize]
         public async Task<IActionResult> Logout()
         {

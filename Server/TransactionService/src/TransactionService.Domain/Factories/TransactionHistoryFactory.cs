@@ -17,9 +17,9 @@ namespace TransactionService.Domain.Factories
             _transactionDomainService = transactionDomainService;
         }
 
-        public TransactionHistory CreateTransaction(int productId, int userId, int quantity, double price, int statusId, string? remarks = null)
+        public TransactionHistory CreateTransaction(int productId, int userId, int quantity, double price, string? remarks = null)
         {
-            var transaction = new TransactionHistory(productId, userId, quantity, price, statusId, remarks);
+            var transaction = new TransactionHistory(productId, userId, quantity, price, remarks);
             _transactionDomainService.ValidateTransaction(transaction);
             return transaction;
         }
