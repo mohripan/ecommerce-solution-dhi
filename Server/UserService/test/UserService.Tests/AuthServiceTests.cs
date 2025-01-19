@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UserService.Contracts.Interfaces;
 using UserService.Domain.Entities;
 using UserService.Infrastructure.Services;
 
@@ -14,7 +15,7 @@ namespace UserService.Tests
     [TestClass]
     public class AuthServiceTests
     {
-        private AuthService _authService;
+        private IAuthService _authService;
         private FakeUserRepository _userRepo;
         private FakePasswordHasher _hasher;
         private FakeUnitOfWork _unitOfWork;
