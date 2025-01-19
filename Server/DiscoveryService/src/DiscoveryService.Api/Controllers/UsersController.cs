@@ -7,11 +7,11 @@ namespace DiscoveryService.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class DiscoveryController : ControllerBase
+    public class UsersController : ControllerBase
     {
         private readonly IUserServiceClient _userServiceClient;
 
-        public DiscoveryController(IUserServiceClient userServiceClient)
+        public UsersController(IUserServiceClient userServiceClient)
         {
             _userServiceClient = userServiceClient;
         }

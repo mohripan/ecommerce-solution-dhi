@@ -45,6 +45,23 @@ services:
       - DiscoveryService__BaseUrl=http://discoveryservice:8080
     profiles:
       - production
+
+  transactionservice:
+    build:
+      context: ./Server/TransactionService
+      dockerfile: Dockerfile
+    ports:
+      - "5003:8080"
+    depends_on:
+      - discoveryservice
+      - postgres
+    networks:
+      - app-network
+    environment:
+      - ConnectionStrings__TransactionDatabase=Host=postgres;Database=TransactionServiceDb;Username=postgres;Password=p@ssw0rd12345678
+      - DiscoveryService__BaseUrl=http://discoveryservice:8080
+    profiles:
+      - production
   
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -81,6 +98,24 @@ services:
       test: ["CMD-SHELL", "mysqladmin ping -h localhost -p${MYSQL_ROOT_PASSWORD} --silent"]
       interval: 10s
       timeout: 5s
+      retries: 5
+
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: p@ssw0rd12345678
+      POSTGRES_DB: TransactionServiceDb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
       retries: 5
 
   userservicetests:
@@ -126,10 +161,26 @@ services:
     profiles:
       - testing
 
+  transactionservicetests:
+    build:
+      context: ./Server/TransactionService
+      dockerfile: Dockerfile.test
+    depends_on:
+      - postgres
+      - discoveryservice
+    volumes:
+      - coverage-vol:/TestCoverage
+      - ./TestResults:/TestResults
+    networks:
+      - app-network
+    profiles:
+      - testing
+
 networks:
   app-network:
 
 volumes:
   sqlserver-data:
   mysql-data:
+  postgres-data:
   coverage-vol:

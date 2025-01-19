@@ -14,13 +14,13 @@ namespace DiscoveryService.Tests
     [TestClass]
     public class DiscoveryControllerTests
     {
-        private DiscoveryController _controller;
+        private UsersController _controller;
 
         [TestInitialize]
         public void Setup()
         {
             var fakeServiceClient = new FakeUserServiceClient();
-            _controller = new DiscoveryController(fakeServiceClient);
+            _controller = new UsersController(fakeServiceClient);
         }
 
         [TestMethod]
