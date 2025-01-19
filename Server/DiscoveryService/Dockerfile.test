@@ -1,0 +1,19 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS test
+WORKDIR /app
+
+COPY ./src ./src
+COPY ./test ./test
+
+WORKDIR /app
+RUN dotnet restore src/DiscoveryService.sln
+
+RUN dotnet build src/DiscoveryService.sln -c Debug
+
+RUN mkdir -p /TestResults
+
+RUN dotnet test test/DiscoveryService.Tests/DiscoveryService.Tests.csproj \
+    --configuration Debug \
+    --logger "trx;LogFileName=/TestResults/test_results.trx" \
+    --logger "console;verbosity=detailed" \
+    --collect "Code Coverage" \
+    --results-directory "/TestResults" || true

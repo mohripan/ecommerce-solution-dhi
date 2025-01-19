@@ -11,7 +11,7 @@ namespace UserService.Tests
     [TestClass]
     public class JwtServiceTests
     {
-        private JwtService _jwtService;
+        private IJwtService _jwtService;
 
         [TestInitialize]
         public void Setup()

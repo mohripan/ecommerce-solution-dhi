@@ -16,7 +16,7 @@ namespace UserService.Tests
     [TestClass]
     public class UserAppServiceTests
     {
-        private UserAppService _service;
+        private IUserAppService _service;
         private FakeUserRepository _userRepo;
         private FakeUserFactory _userFactory;
         private FakeUnitOfWork _unitOfWork;

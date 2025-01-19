@@ -12,6 +12,7 @@ services:
       - ConnectionStrings__UserDatabase=Server=sqlserver,1433;Database=UserServiceDb;User Id=sa;Password=p@ssw0rd12345678;Encrypt=False
     profiles:
       - production
+      - testing
 
   discoveryservice:
     build:
@@ -53,6 +54,20 @@ services:
       dockerfile: Dockerfile.test
     depends_on:
       - sqlserver
+    volumes:
+      - coverage-vol:/TestCoverage
+      - ./TestResults:/TestResults
+    networks:
+      - app-network
+    profiles:
+      - testing
+
+  discoveryservicetests:
+    build:
+      context: ./Server/DiscoveryService
+      dockerfile: Dockerfile.test
+    depends_on:
+      - userservice
     volumes:
       - coverage-vol:/TestCoverage
       - ./TestResults:/TestResults

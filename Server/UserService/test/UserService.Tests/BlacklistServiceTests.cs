@@ -14,7 +14,7 @@ namespace UserService.Tests
         public void AddToBlacklistAndIsBlacklisted_ShouldWork()
         {
             var service = new BlacklistService();
-            var token = "SomeToken";
+            var token = "1921j2ok1jm2ojk1n21i20d11lmxakos";
 
             Assert.IsFalse(service.IsBlacklisted(token));
 
