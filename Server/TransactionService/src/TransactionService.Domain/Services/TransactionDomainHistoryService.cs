@@ -7,7 +7,7 @@ using TransactionService.Domain.Entities;
 
 namespace TransactionService.Domain.Services
 {
-    public class TransactionDomainService : ITransactionDomainService
+    public class TransactionDomainHistoryService : ITransactionHistoryDomainService
     {
         public void ValidateTransaction(TransactionHistory transaction)
         {

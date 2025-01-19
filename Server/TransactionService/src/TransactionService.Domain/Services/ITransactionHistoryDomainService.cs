@@ -7,8 +7,8 @@ using TransactionService.Domain.Entities;
 
 namespace TransactionService.Domain.Services
 {
-    public interface ITransactionDomainService
+    public interface ITransactionHistoryDomainService
     {
-        void ValidateTransaction(Transaction transaction);
+        void ValidateTransaction(TransactionHistory transaction);
     }
 }
