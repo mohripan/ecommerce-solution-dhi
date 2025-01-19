@@ -9,8 +9,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.12" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.20.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DiscoveryService.Application\DiscoveryService.Application.csproj" />
+    <ProjectReference Include="..\DiscoveryService.Infrastructure\DiscoveryService.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

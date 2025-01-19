@@ -6,10 +6,25 @@ services:
       dockerfile: Dockerfile
     ports:
       - "5000:8080"
-    depends_on:
-      - sqlserver
+    networks:
+      - app-network
     environment:
       - ConnectionStrings__UserDatabase=Server=sqlserver,1433;Database=UserServiceDb;User Id=sa;Password=p@ssw0rd12345678;Encrypt=False
+    profiles:
+      - production
+
+  discoveryservice:
+    build:
+      context: ./Server/DiscoveryService
+      dockerfile: Dockerfile
+    ports:
+      - "5001:8080"
+    depends_on:
+      - userservice
+    networks:
+      - app-network
+    environment:
+      - UserService__BaseUrl=http://userservice:8080
     profiles:
       - production
 
@@ -29,6 +44,8 @@ services:
       test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "p@ssw0rd12345678", "-Q", "SELECT 1"]
       interval: 10s
       retries: 5
+    networks:
+      - app-network
 
   userservicetests:
     build:
@@ -39,8 +56,13 @@ services:
     volumes:
       - coverage-vol:/TestCoverage
       - ./TestResults:/TestResults
+    networks:
+      - app-network
     profiles:
       - testing
+
+networks:
+  app-network:
 
 volumes:
   sqlserver-data:
