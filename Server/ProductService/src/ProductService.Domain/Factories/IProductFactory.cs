@@ -9,6 +9,6 @@ namespace ProductService.Domain.Factories
 {
     public interface IProductFactory
     {
-        Product CreateProduct(int categoryId, int userId, double price, int createdBy);
+        Product CreateProduct(int categoryId, int userId, double price, int createdBy, string name);
     }
 }

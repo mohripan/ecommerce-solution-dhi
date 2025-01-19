@@ -1,4 +1,5 @@
-﻿using ProductService.Domain.Factories;
+﻿using Microsoft.Extensions.DependencyInjection;
+using ProductService.Domain.Factories;
 using ProductService.Domain.Services;
 using System;
 using System.Collections.Generic;

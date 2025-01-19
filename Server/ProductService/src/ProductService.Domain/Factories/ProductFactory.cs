@@ -17,9 +17,9 @@ namespace ProductService.Domain.Factories
             _productDomainService = productDomainService;
         }
 
-        public Product CreateProduct(int categoryId, int userId, double price, int createdBy)
+        public Product CreateProduct(int categoryId, int userId, double price, int createdBy, string name)
         {
-            var product = new Product(categoryId, userId, price, createdBy);
+            var product = new Product(categoryId, userId, price, createdBy, name);
             _productDomainService.ValidateBeforeCreation(product);
             return product;
         }

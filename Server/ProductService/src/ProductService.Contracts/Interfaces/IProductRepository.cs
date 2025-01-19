@@ -11,7 +11,9 @@ namespace ProductService.Contracts.Interfaces
     {
         Task<Product?> GetByIdAsync(int id);
         Task<IReadOnlyList<Product>> GetAllAsync(int userId, int page, int sizePerPage, int? categoryId);
+        Task<IReadOnlyList<Product>> GetAllWithoutUserFilterAsync(int page, int sizePerPage, string? productName);
         Task<int> GetTotalCountAsync(int userId, int? categoryId);
+        Task<int> GetTotalCountWithoutUserFilterAsync(string? productName);
         Task AddAsync(Product product);
         void Update(Product product);
         void Delete(Product product);

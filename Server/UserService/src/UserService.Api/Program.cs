@@ -17,7 +17,10 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-await app.MigrateDatabaseAsync<UserDbContext>();
+var userDbConnString = builder.Configuration.GetConnectionString("UserDatabase");
+SqlServerInitializer.EnsureDatabaseAndTables(userDbConnString);
+
+// await app.MigrateDatabaseAsync<UserDbContext>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

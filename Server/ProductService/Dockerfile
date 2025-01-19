@@ -4,6 +4,8 @@ WORKDIR /app
 COPY ./src ./src
 COPY ./test ./test
 
+COPY ./wait-for-it.sh /app/wait-for-it.sh
+
 WORKDIR /app/src
 
 RUN dotnet restore ProductService.sln
@@ -17,5 +19,8 @@ RUN dotnet publish "ProductService.Api.csproj" -c Release -o /app/publish
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 COPY --from=publish /app/publish .
+COPY ./wait-for-it.sh /app/wait-for-it.sh
+
+RUN chmod +x /app/wait-for-it.sh
 EXPOSE 80
-ENTRYPOINT ["dotnet", "ProductService.Api.dll"]
+ENTRYPOINT ["/app/wait-for-it.sh", "sqlserver:1433", "--", "dotnet", "ProductService.Api.dll"]

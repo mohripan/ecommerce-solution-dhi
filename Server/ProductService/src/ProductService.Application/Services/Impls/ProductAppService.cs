@@ -27,7 +27,7 @@ namespace ProductService.Application.Services.Impls
 
         public async Task<ProductResponseDto> CreateProductAsync(ProductRequestDto requestDto, int userId)
         {
-            var product = _productFactory.CreateProduct(requestDto.CategoryId, userId, requestDto.Price, userId);
+            var product = _productFactory.CreateProduct(requestDto.CategoryId, userId, requestDto.Price, userId, requestDto.Name);
 
             await _productRepository.AddAsync(product);
             await _unitOfWork.SaveChangesAsync();
@@ -37,52 +37,71 @@ namespace ProductService.Application.Services.Impls
 
         public async Task<ProductResponseDto?> UpdateProductAsync(int id, ProductRequestDto requestDto, int userId)
         {
-            var product = await _productRepository.GetByIdAsync(id);
-            if (product == null || product.UserId != userId) return null;
+            var existing = await _productRepository.GetByIdAsync(id);
+            if (existing == null) return null;
+            if (existing.UserId != userId)
+                throw new UnauthorizedAccessException("This product does not belong to you.");
 
-            product.CategoryId = requestDto.CategoryId;
-            product.Price = requestDto.Price;
-            product.ModifiedBy = userId.ToString();
-            product.ModifiedOn = DateTime.UtcNow;
+            existing.Name = requestDto.Name;
+            existing.CategoryId = requestDto.CategoryId;
+            existing.Price = requestDto.Price;
 
-            _productRepository.Update(product);
+            existing.ModifiedOn = DateTime.UtcNow;
+            existing.ModifiedBy = userId.ToString();
+
+            _productRepository.Update(existing);
             await _unitOfWork.SaveChangesAsync();
 
-            return MapToResponse(product);
+            return MapToResponse(existing);
         }
 
         public async Task<ProductResponseDto?> ReStockProductAsync(int id, ReStockRequestDto requestDto, int userId)
         {
-            var product = await _productRepository.GetByIdAsync(id);
-            if (product == null || product.UserId != userId) return null;
+            var existing = await _productRepository.GetByIdAsync(id);
+            if (existing == null) return null;
+            if (existing.UserId != userId)
+                throw new UnauthorizedAccessException("This product does not belong to you.");
 
-            product.Quantity += requestDto.Quantity;
+            existing.Quantity += requestDto.Quantity;
+            if (existing.Quantity < 0) existing.Quantity = 0;
 
-            _productRepository.Update(product);
+            existing.ModifiedOn = DateTime.UtcNow;
+            existing.ModifiedBy = userId.ToString();
+
+            _productRepository.Update(existing);
             await _unitOfWork.SaveChangesAsync();
-
-            return MapToResponse(product);
+            return MapToResponse(existing);
         }
 
         public async Task<ProductResponseDto?> GoodPurchasedAsync(int id, ReStockRequestDto requestDto, int userId)
         {
-            var product = await _productRepository.GetByIdAsync(id);
-            if (product == null || product.UserId != userId || product.Quantity < requestDto.Quantity) return null;
+            var existing = await _productRepository.GetByIdAsync(id);
+            if (existing == null) return null;
 
-            product.Quantity -= requestDto.Quantity;
+            if (requestDto.Quantity <= 0)
+                throw new ArgumentException("QuantityChange must be > 0 when purchasing.");
 
-            _productRepository.Update(product);
+            if (existing.Quantity < requestDto.Quantity)
+                throw new InvalidOperationException("Not enough stock to fulfill purchase.");
+
+            existing.Quantity -= requestDto.Quantity;
+
+            existing.ModifiedOn = DateTime.UtcNow;
+            existing.ModifiedBy = userId.ToString();
+
+            _productRepository.Update(existing);
             await _unitOfWork.SaveChangesAsync();
-
-            return MapToResponse(product);
+            return MapToResponse(existing);
         }
 
         public async Task<bool> DeleteProductAsync(int id, int userId)
         {
-            var product = await _productRepository.GetByIdAsync(id);
-            if (product == null || product.UserId != userId) return false;
+            var existing = await _productRepository.GetByIdAsync(id);
+            if (existing == null) return false;
+            if (existing.UserId != userId)
+                throw new UnauthorizedAccessException("This product does not belong to you.");
 
-            _productRepository.Delete(product);
+            _productRepository.Delete(existing);
             await _unitOfWork.SaveChangesAsync();
             return true;
         }
@@ -107,12 +126,31 @@ namespace ProductService.Application.Services.Impls
             };
         }
 
-        public async Task<ProductResponseDto?> GetProductByIdAsync(int id, int userId)
+        public async Task<ProductResponseDto?> GetProductByIdAsync(int id)
         {
             var product = await _productRepository.GetByIdAsync(id);
-            if (product == null || product.UserId != userId) return null;
+            if (product == null) return null;
 
             return MapToResponse(product);
+        }
+
+        public async Task<PaginatedResponse<ProductResponseDto>> SearchProductsAsync(string? productName, int page, int sizePerPage)
+        {
+            var allProducts = await _productRepository.GetAllWithoutUserFilterAsync(page, sizePerPage, productName);
+            var totalCount = await _productRepository.GetTotalCountWithoutUserFilterAsync(productName);
+
+            var totalPage = (int)Math.Ceiling((double)totalCount / sizePerPage);
+            return new PaginatedResponse<ProductResponseDto>
+            {
+                Search = new PaginationMetadata
+                {
+                    Total = totalCount,
+                    TotalPage = totalPage,
+                    SizePerPage = sizePerPage,
+                    PageAt = page
+                },
+                Values = allProducts.Select(MapToResponse).ToList()
+            };
         }
 
         private static ProductResponseDto MapToResponse(Product product)

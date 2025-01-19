@@ -43,6 +43,38 @@ namespace ProductService.Infrastructure.Repositories
                 .ToListAsync();
         }
 
+        public async Task<IReadOnlyList<Product>> GetAllWithoutUserFilterAsync(int page, int sizePerPage, string? productName)
+        {
+            var query = _dbContext.Products.Include(p => p.Category).AsQueryable();
+
+            if (!string.IsNullOrEmpty(productName))
+            {
+                productName = productName.ToLower();
+                query = query.Where(p => p.Name.ToLower().Contains(productName));
+            }
+
+            return await query
+                .OrderBy(p => p.Id)
+                .Skip((page - 1) * sizePerPage)
+                .Take(sizePerPage)
+                .ToListAsync();
+        }
+
+        public async Task<int> GetTotalCountWithoutUserFilterAsync(string? productName)
+        {
+            var query = _dbContext.Products.Include(p => p.Category).AsQueryable();
+
+            if (!string.IsNullOrEmpty(productName))
+            {
+                productName = productName.ToLower();
+                query = query.Where(p => p.Name.ToLower().Contains(productName));
+            }
+
+            return await query.CountAsync();
+        }
+
+
+
         public async Task<int> GetTotalCountAsync(int userId, int? categoryId)
         {
             var query = _dbContext.Products

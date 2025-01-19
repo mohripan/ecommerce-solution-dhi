@@ -47,6 +47,7 @@ namespace ProductService.Infrastructure.Data
 
                 entity.Property(e => e.Quantity).IsRequired();
                 entity.Property(e => e.Price).IsRequired();
+                entity.Property(e => e.Name).IsRequired();
                 entity.Property(e => e.CreatedOn).HasDefaultValueSql("CURRENT_TIMESTAMP");
                 entity.Property(e => e.CreatedBy).IsRequired();
 

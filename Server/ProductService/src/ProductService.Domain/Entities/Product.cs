@@ -10,6 +10,7 @@ namespace ProductService.Domain.Entities
     {
         public int Id { get; set; }
         public int CategoryId { get; set; }
+        public string Name { get; set; } = string.Empty;
         public int UserId { get; set; }
         public int Quantity { get; set; }
         public double Price { get; set; }
@@ -22,7 +23,7 @@ namespace ProductService.Domain.Entities
 
         private Product() { }
 
-        public Product(int categoryId, int userId, double price, int createdBy)
+        public Product(int categoryId, int userId, double price, int createdBy, string name)
         {
             CategoryId = categoryId;
             UserId = userId;
@@ -30,6 +31,7 @@ namespace ProductService.Domain.Entities
             CreatedBy = createdBy;
             CreatedOn = DateTime.UtcNow;
             Quantity = 0;
+            Name = name;
         }
     }
 }

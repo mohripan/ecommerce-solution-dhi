@@ -13,6 +13,8 @@ namespace ProductService.Domain.Services
         {
             if (product.Price < 0)
                 throw new ArgumentException("Price cannot be lower than 0");
+            if (string.IsNullOrWhiteSpace(product.Name))
+                throw new ArgumentException("Name cannot be empty");
         }
     }
 }

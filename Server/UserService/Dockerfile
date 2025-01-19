@@ -4,8 +4,6 @@ WORKDIR /app
 COPY ./src ./src
 COPY ./test ./test
 
-COPY ./wait-for-it.sh /app/wait-for-it.sh
-
 WORKDIR /app/src
 
 RUN dotnet restore UserService.sln
