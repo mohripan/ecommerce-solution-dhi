@@ -7,10 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="DTOs\" />
-    <Folder Include="Exceptions\" />
-    <Folder Include="Services\Interfaces\" />
-    <Folder Include="Services\Impls\" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TransactionService.Contracts\TransactionService.Contracts.csproj" />
+    <ProjectReference Include="..\TransactionService.Domain\TransactionService.Domain.csproj" />
   </ItemGroup>
 
 </Project>

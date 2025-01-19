@@ -24,4 +24,4 @@ RUN chmod +x /app/wait-for-it.sh
 
 EXPOSE 80
 
-ENTRYPOINT ["/app/wait-for-it.sh", "(this one hasn't been implemented because I don't know the post-gre)", "--", "dotnet", "TransactionService.Api.dll"]
+ENTRYPOINT ["/app/wait-for-it.sh", "postgres:5432", "--", "dotnet", "TransactionService.Api.dll"]

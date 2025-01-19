@@ -23,4 +23,4 @@ COPY ./wait-for-it.sh /app/wait-for-it.sh
 
 RUN chmod +x /app/wait-for-it.sh
 EXPOSE 80
-ENTRYPOINT ["/app/wait-for-it.sh", "sqlserver:1433", "--", "dotnet", "ProductService.Api.dll"]
+ENTRYPOINT ["/app/wait-for-it.sh", "mysql:3306", "--", "dotnet", "ProductService.Api.dll"]

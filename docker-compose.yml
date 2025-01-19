@@ -8,6 +8,8 @@ services:
       - "5000:8080"
     networks:
       - app-network
+    depends_on:
+      - sqlserver
     environment:
       - ConnectionStrings__UserDatabase=Server=sqlserver,1433;Database=UserServiceDb;User Id=sa;Password=p@ssw0rd12345678;Encrypt=False
     profiles:
@@ -46,22 +48,22 @@ services:
     profiles:
       - production
 
-  # transactionservice:
-  #   build:
-  #     context: ./Server/TransactionService
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "5003:8080"
-  #   depends_on:
-  #     - discoveryservice
-  #     - postgres
-  #   networks:
-  #     - app-network
-  #   environment:
-  #     - ConnectionStrings__TransactionDatabase=Host=postgres;Database=TransactionServiceDb;Username=postgres;Password=p@ssw0rd12345678
-  #     - DiscoveryService__BaseUrl=http://discoveryservice:8080
-  #   profiles:
-  #     - production
+  transactionservice:
+    build:
+      context: ./Server/TransactionService
+      dockerfile: Dockerfile
+    ports:
+      - "5003:8080"
+    depends_on:
+      - discoveryservice
+      - postgres
+    networks:
+      - app-network
+    environment:
+      - ConnectionStrings__TransactionDatabase=Host=postgres;Database=TransactionServiceDb;Username=postgres;Password=p@ssw0rd12345678
+      - DiscoveryService__BaseUrl=http://discoveryservice:8080
+    profiles:
+      - production
   
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest

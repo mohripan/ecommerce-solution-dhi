@@ -10,19 +10,26 @@ namespace TransactionService.Api.Extensions
             var targetDatabase = builder.Database;
             var sysConnString = $"Host={builder.Host};Port={builder.Port};Username={builder.Username};Password={builder.Password}";
 
+            // Ensure the database exists
             using (var sysConnection = new NpgsqlConnection(sysConnString))
             {
                 sysConnection.Open();
                 using (var createDbCmd = sysConnection.CreateCommand())
                 {
                     createDbCmd.CommandText = $@"
-                    SELECT 'CREATE DATABASE {targetDatabase}'
-                    WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = '{targetDatabase}');
+                    DO $$
+                    BEGIN
+                        IF NOT EXISTS (SELECT 1 FROM pg_database WHERE datname = '{targetDatabase}') THEN
+                            EXECUTE 'CREATE DATABASE {targetDatabase}';
+                        END IF;
+                    END
+                    $$;
                     ";
                     createDbCmd.ExecuteNonQuery();
                 }
             }
 
+            // Ensure tables exist and seed data
             var targetConnString = connectionString;
             using (var targetConnection = new NpgsqlConnection(targetConnString))
             {
@@ -37,7 +44,7 @@ namespace TransactionService.Api.Extensions
                 );
                 ";
 
-                var createTransactionsSql = @"
+                var createTransactionHistorySql = @"
                 CREATE TABLE IF NOT EXISTS TransactionHistory (
                     Id SERIAL PRIMARY KEY,
                     ProductId INT NOT NULL,
@@ -45,31 +52,35 @@ namespace TransactionService.Api.Extensions
                     Quantity INT NOT NULL,
                     Price DOUBLE PRECISION NOT NULL,
                     TotalPrice DOUBLE PRECISION NOT NULL,
-                    TransactionAt TIMESTAMP NOT NULL,
-                    ModifiedOn TIMESTAMP,
+                    TransactionAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    ModifiedOn TIMESTAMP NULL,
                     StatusId INT NOT NULL,
                     Remarks TEXT DEFAULT NULL,
-                    CONSTRAINT FK_Transactions_MstrStatus FOREIGN KEY (StatusId) REFERENCES MstrStatus(Id) ON DELETE RESTRICT
+                    CONSTRAINT FK_TransactionHistory_MstrStatus FOREIGN KEY (StatusId)
+                        REFERENCES MstrStatus(Id) ON DELETE RESTRICT
                 );
                 ";
 
                 using (var cmd = targetConnection.CreateCommand())
                 {
+                    // Create MstrStatus table
                     cmd.CommandText = createMstrStatusSql;
                     cmd.ExecuteNonQuery();
 
-                    cmd.CommandText = createTransactionsSql;
+                    // Create TransactionHistory table
+                    cmd.CommandText = createTransactionHistorySql;
                     cmd.ExecuteNonQuery();
                 }
 
+                // Seed MstrStatus data
                 var seedMstrStatusSql = @"
-                INSERT INTO MstrStatus (Id, StatusName, CreatedOn, CreatedBy)
-                VALUES
-                    (1, 'Pending', '2025-01-01', 'SYS'),
-                    (2, 'Completed', '2025-01-01', 'SYS'),
-                    (3, 'Cancelled', '2025-01-01', 'SYS')
-                ON CONFLICT (Id) DO NOTHING;
-                ";
+                        INSERT INTO MstrStatus (Id, StatusName, CreatedOn, CreatedBy)
+                        VALUES
+                            (1, 'Pending', '2025-01-01', 'SYS'),
+                            (2, 'Completed', '2025-01-01', 'SYS'),
+                            (3, 'Cancelled', '2025-01-01', 'SYS')
+                        ON CONFLICT (Id) DO NOTHING;
+                    ";
 
                 using (var cmd = targetConnection.CreateCommand())
                 {

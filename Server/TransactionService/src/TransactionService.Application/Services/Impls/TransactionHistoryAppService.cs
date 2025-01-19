@@ -29,11 +29,14 @@ namespace TransactionService.Application.Services.Impls
             _transactionHistoryFactory = transactionHistoryFactory;
         }
 
-        public async Task<TransactionHistoryResponseDto> CreateTransactionAsync(TransactionHistoryRequestDto requestDto)
+        public async Task<TransactionHistoryResponseDto> CreateTransactionAsync(TransactionHistoryRequestDto requestDto, int userId)
         {
+            if (userId <= 0)
+                throw new GlobalException("Invalid UserId.");
+
             var transaction = _transactionHistoryFactory.CreateTransaction(
                 requestDto.ProductId,
-                requestDto.UserId,
+                userId,
                 requestDto.Quantity,
                 requestDto.Price,
                 requestDto.Remarks ?? string.Empty
@@ -50,15 +53,15 @@ namespace TransactionService.Application.Services.Impls
             var transaction = await _transactionHistoryRepository.GetByIdAsync(id);
             if (transaction == null) throw new GlobalException("Transaction not found.");
 
-            if (transaction.StatusId == 3 && statusId == 2) // Cancelled => Completed
+            if (transaction.StatusId == 3 && statusId == 2)
                 throw new GlobalException("Cannot change status from Cancelled to Completed.");
-            if (transaction.StatusId == 2 && statusId == 3) // Completed => Cancelled
+            if (transaction.StatusId == 2 && statusId == 3)
                 throw new GlobalException("Cannot change status from Completed to Cancelled.");
 
             transaction.StatusId = statusId;
             transaction.ModifiedOn = DateTime.UtcNow;
 
-            _transactionHistoryRepository.Update(transaction);
+            await _transactionHistoryRepository.UpdateStatusAsync(id, statusId);
             await _unitOfWork.SaveChangesAsync();
 
             return MapToResponse(transaction);
