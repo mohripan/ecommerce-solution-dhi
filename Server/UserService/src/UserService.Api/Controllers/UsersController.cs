@@ -23,10 +23,17 @@ namespace UserService.Api.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> Get(int id)
         {
-            var user = await _userAppService.GetUserByIdAsync(id);
-            if (user == null)
-                return NotFound();
-            return Ok(user);
+            try
+            {
+                var user = await _userAppService.GetUserByIdAsync(id);
+                if (user == null)
+                    return NotFound();
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
         }
 
         [HttpGet]

@@ -73,8 +73,6 @@ namespace ProductService.Infrastructure.Repositories
             return await query.CountAsync();
         }
 
-
-
         public async Task<int> GetTotalCountAsync(int userId, int? categoryId)
         {
             var query = _dbContext.Products
@@ -85,6 +83,13 @@ namespace ProductService.Infrastructure.Repositories
                 query = query.Where(p => p.CategoryId == categoryId.Value);
 
             return await query.CountAsync();
+        }
+
+        public async Task<string?> GetCategoryNameByIdAsync(int categoryId)
+        {
+            var category = await _dbContext.MstrCategories
+                .FirstOrDefaultAsync(c => c.Id == categoryId);
+            return category?.CategoryName;
         }
 
         public async Task AddAsync(Product product)

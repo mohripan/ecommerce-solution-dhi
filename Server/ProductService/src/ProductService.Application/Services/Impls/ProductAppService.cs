@@ -32,7 +32,7 @@ namespace ProductService.Application.Services.Impls
             await _productRepository.AddAsync(product);
             await _unitOfWork.SaveChangesAsync();
 
-            return MapToResponse(product);
+            return await MapToResponseAsync(product);
         }
 
         public async Task<ProductResponseDto?> UpdateProductAsync(int id, ProductRequestDto requestDto, int userId)
@@ -52,7 +52,9 @@ namespace ProductService.Application.Services.Impls
             _productRepository.Update(existing);
             await _unitOfWork.SaveChangesAsync();
 
-            return MapToResponse(existing);
+            existing = await _productRepository.GetByIdAsync(id);
+
+            return await MapToResponseAsync(existing);
         }
 
         public async Task<ProductResponseDto?> ReStockProductAsync(int id, ReStockRequestDto requestDto, int userId)
@@ -70,7 +72,7 @@ namespace ProductService.Application.Services.Impls
 
             _productRepository.Update(existing);
             await _unitOfWork.SaveChangesAsync();
-            return MapToResponse(existing);
+            return await MapToResponseAsync(existing);
         }
 
         public async Task<ProductResponseDto?> GoodPurchasedAsync(int id, ReStockRequestDto requestDto, int userId)
@@ -91,7 +93,7 @@ namespace ProductService.Application.Services.Impls
 
             _productRepository.Update(existing);
             await _unitOfWork.SaveChangesAsync();
-            return MapToResponse(existing);
+            return await MapToResponseAsync(existing);
         }
 
         public async Task<bool> DeleteProductAsync(int id, int userId)
@@ -113,6 +115,13 @@ namespace ProductService.Application.Services.Impls
 
             var totalPage = (int)Math.Ceiling((double)totalCount / sizePerPage);
 
+            var productDtos = new List<ProductResponseDto>();
+            foreach (var product in products)
+            {
+                var dto = await MapToResponseAsync(product);
+                productDtos.Add(dto);
+            }
+
             return new PaginatedResponse<ProductResponseDto>
             {
                 Search = new PaginationMetadata
@@ -122,7 +131,7 @@ namespace ProductService.Application.Services.Impls
                     SizePerPage = sizePerPage,
                     PageAt = page
                 },
-                Values = products.Select(MapToResponse).ToList()
+                Values = productDtos
             };
         }
 
@@ -131,7 +140,7 @@ namespace ProductService.Application.Services.Impls
             var product = await _productRepository.GetByIdAsync(id);
             if (product == null) return null;
 
-            return MapToResponse(product);
+            return await MapToResponseAsync(product);
         }
 
         public async Task<PaginatedResponse<ProductResponseDto>> SearchProductsAsync(string? productName, int page, int sizePerPage)
@@ -140,6 +149,14 @@ namespace ProductService.Application.Services.Impls
             var totalCount = await _productRepository.GetTotalCountWithoutUserFilterAsync(productName);
 
             var totalPage = (int)Math.Ceiling((double)totalCount / sizePerPage);
+
+            var productDtos = new List<ProductResponseDto>();
+            foreach (var product in allProducts)
+            {
+                var dto = await MapToResponseAsync(product);
+                productDtos.Add(dto);
+            }
+
             return new PaginatedResponse<ProductResponseDto>
             {
                 Search = new PaginationMetadata
@@ -149,16 +166,23 @@ namespace ProductService.Application.Services.Impls
                     SizePerPage = sizePerPage,
                     PageAt = page
                 },
-                Values = allProducts.Select(MapToResponse).ToList()
+                Values = productDtos
             };
         }
 
-        private static ProductResponseDto MapToResponse(Product product)
+        private async Task<ProductResponseDto> MapToResponseAsync(Product product)
         {
+            var categoryName = product.Category?.CategoryName;
+
+            if (string.IsNullOrEmpty(categoryName) && product.CategoryId > 0)
+            {
+                categoryName = await _productRepository.GetCategoryNameByIdAsync(product.CategoryId);
+            }
+
             return new ProductResponseDto
             {
                 Id = product.Id,
-                CategoryName = product.Category?.CategoryName ?? "Unknown",
+                CategoryName = categoryName ?? "Unknown",
                 Quantity = product.Quantity,
                 Price = product.Price,
                 CreatedOn = product.CreatedOn
