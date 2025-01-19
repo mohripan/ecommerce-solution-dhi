@@ -5,7 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UserService.Application.Services;
+using UserService.Application.Services.Interfaces;
+using UserService.Application.Services.Impls;
 
 namespace UserService.Application
 {
@@ -15,7 +16,6 @@ namespace UserService.Application
         {
             services.AddScoped<IUserAppService, UserAppService>();
             services.AddScoped<IJwtService, JwtService>();
-            services.AddSingleton<IBlacklistService, BlacklistService>();
 
             return services;
         }

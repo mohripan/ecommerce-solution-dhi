@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.Extensions.Configuration;
+using UserService.Application.Services.Interfaces;
 
-namespace UserService.Application.Services
+namespace UserService.Application.Services.Impls
 {
     public class JwtService : IJwtService
     {

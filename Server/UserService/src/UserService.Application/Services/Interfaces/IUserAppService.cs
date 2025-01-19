@@ -7,7 +7,7 @@ using UserService.Application.DTOs;
 using UserService.Application.DTOs.Requests;
 using UserService.Application.DTOs.Responses;
 
-namespace UserService.Application.Services
+namespace UserService.Application.Services.Interfaces
 {
     public interface IUserAppService
     {

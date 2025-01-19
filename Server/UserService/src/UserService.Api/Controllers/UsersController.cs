@@ -6,7 +6,7 @@ using UserService.Application.DTOs;
 using UserService.Application.DTOs.Requests;
 using UserService.Application.DTOs.Responses;
 using UserService.Application.Exceptions;
-using UserService.Application.Services;
+using UserService.Application.Services.Interfaces;
 namespace UserService.Api.Controllers
 {
     [ApiController]

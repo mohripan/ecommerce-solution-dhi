@@ -6,7 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using UserService.Application.DTOs.Requests;
 using UserService.Application.Exceptions;
-using UserService.Application.Services;
+using UserService.Application.Services.Impls;
+using UserService.Application.Services.Interfaces;
 using UserService.Contracts.Interfaces;
 using UserService.Domain.Entities;
 using UserService.Domain.Factories;
@@ -22,7 +23,6 @@ namespace UserService.Tests
         private FakeUnitOfWork _unitOfWork;
         private FakePasswordHasher _passwordHasher;
         private FakeAuthService _authService;
-        private FakeBlacklistService _blacklistService;
         private FakeJwtService _jwtService;
 
         [TestInitialize]
@@ -33,7 +33,6 @@ namespace UserService.Tests
             _unitOfWork = new FakeUnitOfWork();
             _passwordHasher = new FakePasswordHasher();
             _authService = new FakeAuthService();
-            _blacklistService = new FakeBlacklistService();
             _jwtService = new FakeJwtService();
 
             _service = new UserAppService(
@@ -42,7 +41,6 @@ namespace UserService.Tests
                 _unitOfWork,
                 _passwordHasher,
                 _authService,
-                _blacklistService,
                 _jwtService
             );
         }
@@ -340,21 +338,6 @@ namespace UserService.Tests
             }
 
             throw new Exception("Invalid token");
-        }
-    }
-
-    public class FakeBlacklistService : IBlacklistService
-    {
-        private readonly HashSet<string> _tokens = new HashSet<string>();
-
-        public void AddToBlacklist(string token)
-        {
-            _tokens.Add(token);
-        }
-
-        public bool IsBlacklisted(string token)
-        {
-            return _tokens.Contains(token);
         }
     }
 

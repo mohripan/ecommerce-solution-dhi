@@ -4,7 +4,8 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using UserService.Application.Services;
+using UserService.Application.Services.Impls;
+using UserService.Application.Services.Interfaces;
 
 namespace UserService.Tests
 {

@@ -8,11 +8,12 @@ using UserService.Application.DTOs;
 using UserService.Application.DTOs.Requests;
 using UserService.Application.DTOs.Responses;
 using UserService.Application.Exceptions;
+using UserService.Application.Services.Interfaces;
 using UserService.Contracts.Interfaces;
 using UserService.Domain.Entities;
 using UserService.Domain.Factories;
 
-namespace UserService.Application.Services
+namespace UserService.Application.Services.Impls
 {
     public class UserAppService : IUserAppService
     {
@@ -21,7 +22,6 @@ namespace UserService.Application.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IPasswordHasher _passwordHasher;
         private readonly IAuthService _authService;
-        private readonly IBlacklistService _blacklistService;
         private readonly IJwtService _jwtService;
 
         public UserAppService(
@@ -30,7 +30,6 @@ namespace UserService.Application.Services
             IUnitOfWork unitOfWork,
             IPasswordHasher passwordHasher,
             IAuthService authService,
-            IBlacklistService blacklistService,
             IJwtService jwtService)
         {
             _userRepository = userRepository;
@@ -38,7 +37,6 @@ namespace UserService.Application.Services
             _unitOfWork = unitOfWork;
             _passwordHasher = passwordHasher;
             _authService = authService;
-            _blacklistService = blacklistService;
             _jwtService = jwtService;
         }
 
