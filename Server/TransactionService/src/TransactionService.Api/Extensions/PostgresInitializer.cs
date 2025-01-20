@@ -52,8 +52,8 @@ namespace TransactionService.Api.Extensions
                     ""Quantity"" INT NOT NULL,
                     ""Price"" DOUBLE PRECISION NOT NULL,
                     ""TotalPrice"" DOUBLE PRECISION NOT NULL,
-                    ""TransactionAt"" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                    ""ModifiedOn"" TIMESTAMP NULL,
+                    ""TransactionAt"" timestamptz NOT NULL DEFAULT NOW(),
+                    ""ModifiedOn"" timestamptz NULL,
                     ""StatusId"" INT NOT NULL,
                     ""Remarks"" TEXT DEFAULT NULL,
                     CONSTRAINT FK_TransactionHistory_MstrStatus FOREIGN KEY (""StatusId"")

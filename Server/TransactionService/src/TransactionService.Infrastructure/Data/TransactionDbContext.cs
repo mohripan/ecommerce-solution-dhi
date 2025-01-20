@@ -44,10 +44,10 @@ namespace TransactionService.Infrastructure.Data
                 entity.Property(e => e.Price).IsRequired();
                 entity.Property(e => e.TotalPrice).IsRequired();
                 entity.Property(e => e.TransactionAt)
-                    .HasColumnType("timestamp without time zone");
+                    .HasColumnType("timestamp with time zone");
 
                 entity.Property(e => e.ModifiedOn)
-                      .HasColumnType("timestamp without time zone");
+                      .HasColumnType("timestamp with time zone");
                 entity.Property(e => e.StatusId).IsRequired();
 
                 entity.HasOne(th => th.Status)
