@@ -1,0 +1,54 @@
+﻿@page
+@model TransactionsModel
+@{
+    ViewData["Title"] = "Transactions";
+}
+
+<h2>Transaction History</h2>
+
+@if (Model.Transactions.Count == 0)
+{
+    <p>No transactions found.</p>
+}
+else
+{
+    <table class="table table-striped table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>Product ID</th>
+                <th>Product Name</th>
+                <th>Transaction ID</th>
+                <th>User ID</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total Price</th>
+                <th>Status</th>
+                <th>Remarks</th>
+                <th>Transaction Date</th>
+                <th>Last Modified</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var productTransaction in Model.Transactions)
+            {
+                foreach (var transaction in productTransaction.TransactionHistory)
+                {
+                    <tr>
+                        <td>@productTransaction.ProductId</td>
+                        <td>@productTransaction.ProductName</td>
+                        <td>@transaction.Id</td>
+                        <td>@transaction.UserId</td>
+                        <td>@transaction.Quantity</td>
+                        <td>@transaction.Price</td>
+                        <td>@transaction.TotalPrice</td>
+                        <td>@transaction.StatusName</td>
+                        <td>@transaction.Remarks</td>
+                        <td>@transaction.TransactionAt</td>
+                        <td>@transaction.ModifiedOn</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+}
+<a asp-page="/MainMenu" class="btn btn-primary">Back to Main Menu</a>

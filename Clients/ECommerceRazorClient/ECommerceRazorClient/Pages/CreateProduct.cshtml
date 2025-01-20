@@ -1,0 +1,28 @@
+﻿@page
+@model CreateProductModel
+@{
+    ViewData["Title"] = "Create Product";
+}
+
+<div class="center-content">
+    <h2>Create Product</h2>
+    <form method="post">
+
+        <form method="post">
+            <div>
+                <label>Name:</label>
+                <input type="text" name="Name" required />
+            </div>
+            <div>
+                <label>Category ID:</label>
+                <input type="number" name="CategoryId" required />
+            </div>
+            <div>
+                <label>Price:</label>
+                <input type="number" name="Price" step="0.01" required />
+            </div>
+            <button type="submit" class="btn btn-primary">Create Product</button>
+        </form>
+        <a asp-page="/MainMenu" class="btn btn-secondary">Back to Main Menu</a>
+    </form>
+</div>

@@ -1,0 +1,49 @@
+﻿@page
+@model BuyerMenuModel
+@{
+    ViewData["Title"] = "Buyer Menu";
+}
+
+<h2>Buyer Menu</h2>
+
+<form method="get">
+    <div class="form-group">
+        <label for="Search">Search Products:</label>
+        <input type="text" name="Search" id="Search" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+@if (Model.Products.Count > 0)
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Category</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in Model.Products)
+            {
+                <tr>
+                    <td>@product.Id</td>
+                    <td>@product.CategoryName</td>
+                    <td>@product.Quantity</td>
+                    <td>@product.Price</td>
+                    <td>
+                        <a asp-page="/Purchase" asp-route-id="@product.Id" asp-route-price="@product.Price" class="btn btn-success">Purchase</a>
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else if (Model.SearchPerformed)
+{
+    <p>No products found for your search.</p>
+}
