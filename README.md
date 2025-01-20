@@ -20,7 +20,7 @@ This project is designed to be easy to run using **Docker**. As long as you have
 3. Once the build is complete, start the services:
    ```bash
    docker-compose --profile production up
-4. The system should now be running. You can access the services via the respective endpoints (e.g., http://localhost:<port>).
+4. The system should now be running. You can access the services via the respective endpoints (e.g., `http://localhost:<port>`).
 
 ## Note on Testing
 For better testing and validation, I have included a Postman collection in the project. This collection provides a comprehensive set of requests to interact with all the services. Since the client code is not yet fully complete, the Postman collection serves as an effective way to explore and test the APIs.
@@ -117,9 +117,22 @@ The primary objective was to create a **scalable**, **loosely coupled**, and **m
 
 For example, the **Adapter Pattern** used in DiscoveryService allows each microservice to function independently, with DiscoveryService managing communication. Similarly, the **Repository Pattern** ensures database interactions are encapsulated, making database changes straightforward.
 
-### Current Implementation
+### JWT Symmetric Key and Improvements
+The system currently uses a **symmetric key** for signing and validating JSON Web Tokens (JWTs). While this is functional and secure for smaller-scale systems, there are several areas where it can be improved for better scalability and security. The reason why I want to tell about this is because of the tight deadline, but I'm still trying to make it as modular as possible. In real-world scenario, we don't want to implement it like this, unless consumers and producers are tightly coupled.
 
+1. **Current Setup:**
+- A symmetric key (`Jwt:Key` in `appsettings.json`) is used for both signing and validating tokens.
+
+2. **Limitations:**
+- **Shared Secret Risk:** If the symmetric key is exposed, both signing and validation processes are compromised.
+- **Scaling Issues:** In microservice architectures, managing a shared symmetric key across services becomes increasingly complex.
+
+3. **Improvements:**
+- Use Assymetric Keys
+- Centralized Identity Service
+- Token Rotation
+
+### Current Implementation
 Due to tight deadlines, service communication currently uses traditional HTTP requests via the DiscoveryService. However, for real-world applications:
 - **Message Brokers** (e.g., RabbitMQ, Kafka) would improve performance and enable asynchronous communication.
 - **Redis** or similar caching solutions are highly recommended to ensure fault tolerance. For example, if a service is down, data can be retrieved from the cache instead of making repeated calls to the downed service.
-
