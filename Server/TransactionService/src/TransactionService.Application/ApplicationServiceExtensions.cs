@@ -15,6 +15,10 @@ namespace TransactionService.Application
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<ITransactionHistoryAppService, TransactionHistoryAppService>();
+            services.AddHttpClient<IProductServiceClient, ProductServiceClient>(client =>
+            {
+                client.BaseAddress = new Uri(configuration["DiscoveryService:BaseUrl"]);
+            });
             return services;
         }
     }

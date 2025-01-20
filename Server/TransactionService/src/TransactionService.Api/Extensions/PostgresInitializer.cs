@@ -36,28 +36,28 @@ namespace TransactionService.Api.Extensions
                 targetConnection.Open();
 
                 var createMstrStatusSql = @"
-                CREATE TABLE IF NOT EXISTS MstrStatus (
-                    Id SERIAL PRIMARY KEY,
-                    StatusName VARCHAR(100) NOT NULL,
-                    CreatedOn TIMESTAMP NOT NULL DEFAULT '2025-01-01',
-                    CreatedBy VARCHAR(50) NOT NULL DEFAULT 'SYS'
+                CREATE TABLE IF NOT EXISTS ""MstrStatus"" (
+                    ""Id"" SERIAL PRIMARY KEY,
+                    ""StatusName"" VARCHAR(100) NOT NULL,
+                    ""CreatedOn"" TIMESTAMP NOT NULL DEFAULT '2025-01-01',
+                    ""CreatedBy"" VARCHAR(50) NOT NULL DEFAULT 'SYS'
                 );
                 ";
 
                 var createTransactionHistorySql = @"
-                CREATE TABLE IF NOT EXISTS TransactionHistory (
-                    Id SERIAL PRIMARY KEY,
-                    ProductId INT NOT NULL,
-                    UserId INT NOT NULL,
-                    Quantity INT NOT NULL,
-                    Price DOUBLE PRECISION NOT NULL,
-                    TotalPrice DOUBLE PRECISION NOT NULL,
-                    TransactionAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                    ModifiedOn TIMESTAMP NULL,
-                    StatusId INT NOT NULL,
-                    Remarks TEXT DEFAULT NULL,
-                    CONSTRAINT FK_TransactionHistory_MstrStatus FOREIGN KEY (StatusId)
-                        REFERENCES MstrStatus(Id) ON DELETE RESTRICT
+                CREATE TABLE IF NOT EXISTS ""TransactionHistory"" (
+                    ""Id"" SERIAL PRIMARY KEY,
+                    ""ProductId"" INT NOT NULL,
+                    ""UserId"" INT NOT NULL,
+                    ""Quantity"" INT NOT NULL,
+                    ""Price"" DOUBLE PRECISION NOT NULL,
+                    ""TotalPrice"" DOUBLE PRECISION NOT NULL,
+                    ""TransactionAt"" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    ""ModifiedOn"" TIMESTAMP NULL,
+                    ""StatusId"" INT NOT NULL,
+                    ""Remarks"" TEXT DEFAULT NULL,
+                    CONSTRAINT FK_TransactionHistory_MstrStatus FOREIGN KEY (""StatusId"")
+                        REFERENCES ""MstrStatus""(""Id"") ON DELETE RESTRICT
                 );
                 ";
 
@@ -74,12 +74,12 @@ namespace TransactionService.Api.Extensions
 
                 // Seed MstrStatus data
                 var seedMstrStatusSql = @"
-                        INSERT INTO MstrStatus (Id, StatusName, CreatedOn, CreatedBy)
+                        INSERT INTO ""MstrStatus"" (""Id"", ""StatusName"", ""CreatedOn"", ""CreatedBy"")
                         VALUES
                             (1, 'Pending', '2025-01-01', 'SYS'),
                             (2, 'Completed', '2025-01-01', 'SYS'),
                             (3, 'Cancelled', '2025-01-01', 'SYS')
-                        ON CONFLICT (Id) DO NOTHING;
+                        ON CONFLICT (""Id"") DO NOTHING;
                     ";
 
                 using (var cmd = targetConnection.CreateCommand())

@@ -10,6 +10,7 @@ namespace ProductService.Application.DTOs.Responses
     {
         public int Id { get; set; }
         public string CategoryName { get; set; } = default!;
+        public string ProductName { get; set; } = default!;
         public int Quantity { get; set; }
         public double Price { get; set; }
         public DateTime CreatedOn { get; set; }

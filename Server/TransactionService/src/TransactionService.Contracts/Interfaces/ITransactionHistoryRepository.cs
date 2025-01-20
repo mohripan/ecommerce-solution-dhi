@@ -14,5 +14,6 @@ namespace TransactionService.Contracts.Interfaces
         Task<int> GetTotalCountByUserIdAsync(int userId);
         Task AddAsync(TransactionHistory transactionHistory);
         Task UpdateStatusAsync(int transactionId, int statusId);
+        Task<IReadOnlyList<TransactionHistory>> GetByProductIdsAsync(List<int> productIds);
     }
 }

@@ -60,5 +60,13 @@ namespace TransactionService.Infrastructure.Repositories
 
             _dbContext.TransactionHistories.Update(transaction);
         }
+
+        public async Task<IReadOnlyList<TransactionHistory>> GetByProductIdsAsync(List<int> productIds)
+        {
+            return await _dbContext.TransactionHistories
+                .Include(th => th.Status)
+                .Where(th => productIds.Contains(th.ProductId))
+                .ToListAsync();
+        }
     }
 }

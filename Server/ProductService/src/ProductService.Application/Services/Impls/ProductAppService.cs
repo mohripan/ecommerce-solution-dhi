@@ -182,6 +182,7 @@ namespace ProductService.Application.Services.Impls
             return new ProductResponseDto
             {
                 Id = product.Id,
+                ProductName = product.Name,
                 CategoryName = categoryName ?? "Unknown",
                 Quantity = product.Quantity,
                 Price = product.Price,
