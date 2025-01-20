@@ -3,6 +3,30 @@
 ## Thank You
 First, I want to say thank you! This has been an exciting and fun challenge to work on, and I’m thrilled to share this prototype with you. Let’s dive in.
 
+## How to Run the Project
+
+This project is designed to be easy to run using **Docker**. As long as you have Docker installed, you can set up and launch the entire system with just a few commands.
+
+### Prerequisites
+- Docker and Docker Compose installed on your machine.
+- A terminal or command line interface.
+
+### Steps to Run the Project
+
+1. Navigate to the root folder of the project.
+2. Build the Docker images with the following command:
+   ```bash
+   docker-compose --profile production build
+3. Once the build is complete, start the services:
+   ```bash
+   docker-compose --profile production up
+4. The system should now be running. You can access the services via the respective endpoints (e.g., http://localhost:<port>).
+
+## Note on Testing
+For better testing and validation, I have included a Postman collection in the project. This collection provides a comprehensive set of requests to interact with all the services. Since the client code is not yet fully complete, the Postman collection serves as an effective way to explore and test the APIs.
+
+You can find the Postman collection in the root directory of the project.
+
 ## The Big Picture
 This project is a prototype for a simple e-commerce system designed with a focus on demonstrating SOLID principles and microservice architecture. It allows users to sign up as either a **Buyer** or a **Seller**, and here’s a high-level view of how the system works:
 
@@ -98,23 +122,4 @@ For example, the **Adapter Pattern** used in DiscoveryService allows each micros
 Due to tight deadlines, service communication currently uses traditional HTTP requests via the DiscoveryService. However, for real-world applications:
 - **Message Brokers** (e.g., RabbitMQ, Kafka) would improve performance and enable asynchronous communication.
 - **Redis** or similar caching solutions are highly recommended to ensure fault tolerance. For example, if a service is down, data can be retrieved from the cache instead of making repeated calls to the downed service.
-
-## How to Run the Project
-
-This project is designed to be easy to run using **Docker**. As long as you have Docker installed, you can set up and launch the entire system with just a few commands.
-
-### Prerequisites
-- Docker and Docker Compose installed on your machine.
-- A terminal or command line interface.
-
-### Steps to Run the Project
-
-1. Navigate to the root folder of the project.
-2. Build the Docker images with the following command:
-   ```bash
-   docker-compose --profile production build
-3. Once the build is complete, start the services:
-   ```bash
-   docker-compose --profile production up
-4. The system should now be running. You can access the services via the respective endpoints (e.g., http://localhost:<port>).
 
